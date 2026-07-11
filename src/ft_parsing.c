@@ -1,27 +1,74 @@
 #include "../library/codexion.h"
 
-int ft_parsing(int ac, char **ar, t_data *args)
+static long ft_atoi(char *s)
 {
-    int false_args;
+	int	i;
+	long	res;
+	int sign;
 
-    false_args = 0;
+	sign = 1;
+	i = 0;
+	while (s[i] == ' ' || (s[i] >= 9 && s[i] <= 9))
+		i++;
+
+	if (s[i] == '+' || s[i] == '-')
+	{
+		if (s[i] == '-')
+			sign *= -1;
+		i++;
+	}
+
+	res = 0;
+	while (s[i] >= '0' && s[i] <= '9')
+	{
+		res = res * 10 + (s[i] -'0');
+		i++;
+	}
+	return (res * sign);
+}
+
+
+static int is_valid_int(char *s)
+{
+    long    num;
+    int    i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (!(s[i] >= '0' && s[i] <= '9'))
+			return 0;
+		i++;
+	}
+	num = ft_atoi(s);
+    if (num > 2147483647)
+		return 0;
+    else if (num < 0)
+		return 0;
+
+    return 1;
+}
+
+
+int ft_parsing(int ac, char **ar)
+{
     if (ac < 9)
-    {   
-        false_args = 1;
-        return false_args;
-    }
-    args->number_of_coders = atoi(ar[1]);
-    args->time_to_burnout = atoi(ar[2]);
-    args->time_to_compile = atoi(ar[3]);
-    args->time_to_debug = atoi(ar[4]);
-    args->time_to_refactor = atoi(ar[5]);
-    args->number_of_compiles_required = atoi(ar[6]);
-    args->dongle_cooldown = atoi(ar[7]);
-    if (strcmp("fifo", ar[8]) == 0)
-        args->scheduler = 1;
-    else if (strcmp("edf", ar[8]) == 0)
-        args->scheduler = 0;
-    else 
-        return false_args = 1;
-    return false_args;
+		return (write(1, "Argument is fails", 18));
+	if (!is_valid_int(ar[1]))
+    	return (write(1, "The number of coder is incorrect\n", 34));
+	if (!is_valid_int(ar[2]))
+    	return (write(1, "The time_to_burnou is incorrect\n", 33));
+	if (!is_valid_int(ar[3]))
+    	return (write(1, "The time_to_compile is incorrect\n", 34));
+	if (!is_valid_int(ar[4]))
+    	return (write(1, "The time_to_debug is incorrect\n", 32));
+	if (!is_valid_int(ar[5]))
+    	return (write(1, "The time_to_refactor is incorrect\n", 35));
+	if (!is_valid_int(ar[6]))
+    	return (write(1, "The number_of_compiles_required is incorrect\n", 46));
+	if (!is_valid_int(ar[7]))
+    	return (write(1, "The dongle_cooldown is incorrect\n", 34));
+    if (strcmp("fifo", ar[8]) != 0 && strcmp("edf", ar[8]) != 0)
+		return (write(1, "The scheduler is incorrect must be 'fifo' or 'edf'\n", 52));
+    return 0;
 }

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <string.h>
+#include <unistd.h>
 
 
 
@@ -27,7 +28,7 @@ typedef struct	s_coder {
 
 
 
-int ft_parsing(int ac, char **ar, t_data *args);
+int ft_parsing(int ac, char **ar);
 
 
 #endif

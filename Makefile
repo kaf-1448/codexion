@@ -1,6 +1,6 @@
 CC = cc 
-FALGS = -Wall -Wextra -Werror 
-SRCS = src/main.c src/ft_parsing.c
+FALGS = -Wall -Wextra -Werror -pthread
+SRCS = src/main.c src/ft_parsing.c src/init.c src/coder.c
 OBJS = $(SRCS:.c=.o)
 NAME = codexion
 

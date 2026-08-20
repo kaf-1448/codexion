@@ -1,6 +1,6 @@
 #include "../library/codexion.h"
 
-static long ft_atoi(char *s)
+long ft_atoi(char *s)
 {
 	int	i;
 	long	res;
@@ -54,7 +54,7 @@ int ft_parsing(int ac, char **ar)
 {
     if (ac < 9)
 		return (write(1, "Argument is fails", 18));
-	if (!is_valid_int(ar[1]))
+	if (!is_valid_int(ar[1]) || ft_atoi(ar[1]) <= 0)
     	return (write(1, "The number of coder is incorrect\n", 34));
 	if (!is_valid_int(ar[2]))
     	return (write(1, "The time_to_burnou is incorrect\n", 33));

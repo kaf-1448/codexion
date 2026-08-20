@@ -20,3 +20,62 @@ t_data *intilize_data(char **ar)
 		data->scheduler = 2;
 	return (data);
 }
+
+t_dongle	*create_dongles(t_data *data)
+{
+	t_dongle *dongle;
+	int i;
+	
+
+	dongle = malloc(sizeof(t_dongle) * data->number_of_coders);
+	if (!dongle)
+	return (NULL);
+	i = 0;
+	while (i < data->number_of_coders)
+	{
+		dongle[i].id = i+1;
+		dongle[i].is_free = 1;
+		dongle[i].last_released_time = 0;
+		pthread_mutex_init(&dongle[i].lock, NULL);
+		i++;
+	}
+	return (dongle);
+}
+
+t_coder *create_coders(t_data *data)
+{
+	t_coder *coders;
+	int	i;
+	
+	coders = malloc(sizeof(t_coder) * data->number_of_coders);
+	if (!coders)
+	return (NULL);
+	i = 0;
+	while (i < data->number_of_coders)
+	{
+		coders[i].id = i+1;
+		coders[i].last_time_compilation = 0;
+		coders[i].compiles_count = 0;
+		coders[i].is_finished = 0;
+		coders[i].right_dongle = i;
+		coders[i].left_dongle = ;
+		i++;
+	}
+	return (coders);
+}
+
+
+
+t_sumilation *sumlation(t_data *data)
+{
+	t_sumilation	*sum;
+
+	sum = malloc(sizeof(t_sumilation ));
+	if (!sum)
+		return (NULL);
+	sum->data = intilize_data(data);
+	sum->coder = create_coders(data);
+	sum->dongle = create_dongles(data);
+	return (sum);
+}
+

@@ -34,9 +34,9 @@ typedef struct	s_coder {
 	long	last_time_compilation;
 	int	compiles_count;
 	int	is_finished;
-
 	t_dongle	*right_dongle;
 	t_dongle	*left_dongle;
+
 }	t_coder;
 
 typedef struct s_sumilation {

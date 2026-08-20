@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 
 
@@ -36,7 +37,7 @@ typedef struct	s_coder {
 	int	is_finished;
 	t_dongle	*right_dongle;
 	t_dongle	*left_dongle;
-
+	t_data *data;
 }	t_coder;
 
 typedef struct s_sumilation {
@@ -51,8 +52,8 @@ typedef struct s_sumilation {
 int ft_parsing(int ac, char **ar);
 long ft_atoi(char *s);
 t_data *intilize_data(char **ar);
-t_data *intilize_data(char **ar);
-
+t_sumilation *intit_sumlation(char **ar);
+void	sumilation(t_sumilation *sum);
 
 
 

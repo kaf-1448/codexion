@@ -58,6 +58,7 @@ t_coder *create_coders(t_data *data, t_dongle *dongle)
 		coders[i].is_finished = 0;
 		coders[i].right_dongle = &dongle[i];
 		coders[i].left_dongle = &dongle[(i + 1) % data->number_of_coders];
+		coders[i].data = data; 
 		i++;
 	}
 	return (coders);

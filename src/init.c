@@ -41,9 +41,10 @@ t_dongle	*create_dongles(t_data *data)
 	return (dongle);
 }
 
-t_coder *create_coders(t_data *data, t_dongle *dongle)
+t_coder *create_coders(t_data *data, t_dongle *dongle, t_sumilation *simu)
 {
 	t_coder *coders;
+	// struct timeval tv;
 	int	i;
 	
 	coders = malloc(sizeof(t_coder) * data->number_of_coders);
@@ -56,14 +57,14 @@ t_coder *create_coders(t_data *data, t_dongle *dongle)
 		coders[i].last_time_compilation = 0;
 		coders[i].compiles_count = 0;
 		coders[i].is_finished = 0;
-		coders[i].right_dongle = &dongle[i];
-		coders[i].left_dongle = &dongle[(i + 1) % data->number_of_coders];
-		coders[i].data = data; 
+		coders[i].right_dongle = &dongle[(i -1 + data->number_of_coders) % data->number_of_coders];
+		coders[i].left_dongle = &dongle[i];
+		coders[i].data = data;
+		coders[i].simu = simu;
 		i++;
 	}
 	return (coders);
 }
-
 
 
 t_sumilation *intit_sumlation(char **ar)
@@ -79,7 +80,7 @@ t_sumilation *intit_sumlation(char **ar)
 	sum->dongle = create_dongles(sum->data);
 	if (!sum->dongle)
 		return (free(sum->data), free(sum), NULL);
-	sum->coder = create_coders(sum->data,sum->dongle);
+	sum->coder = create_coders(sum->data,sum->dongle, sum);
 	if (!sum->coder)
 		return (free(sum->dongle),free(sum->data), free(sum), NULL);
 	return (sum);

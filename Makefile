@@ -1,7 +1,6 @@
 CC = cc 
 FALGS = -Wall -Wextra -Werror -pthread
-SRCS = src/main.c src/ft_parsing.c src/init.c  src/sumilation.c
-# SRCS = src/main.c src/ft_parsing.c src/init.c 
+SRCS = src/main.c src/ft_parsing.c src/init.c  src/sumilation.c  src/dongle.c src/coder.c
 OBJS = $(SRCS:.c=.o)
 NAME = codexion
 

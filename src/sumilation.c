@@ -1,57 +1,5 @@
 #include    "../library/codexion.h"
 
-
-// void	*routine(void	*args)
-// {
-// 	t_coder *coder;
-// 	t_dongle *first_dongle;
-// 	t_dongle *second_dongle;
-
-// 	coder = (t_coder*)args;
-	
-	
-// 	if (coder->right_dongle->id < coder->left_dongle->id)
-// 	{
-// 		first_dongle = coder->right_dongle;
-// 		second_dongle = coder->left_dongle;
-// 	}
-// 	else
-// 	{
-// 		first_dongle = coder->left_dongle;
-// 		second_dongle = coder->right_dongle;
-// 	}
-
-// 	while (coder->compiles_count < coder->data->number_of_compiles_required)
-// 	{
-// 		pthread_mutex_lock(&coder->simu->print_lock);
-
-// 		pthread_mutex_lock(&first_dongle->lock);
-// 		pthread_mutex_lock(&second_dongle->lock);
-// 		printf("%d has taken a dongle\n", coder->id);
-		
-// 		printf("%d has taken a dongle\n", coder->id);
-		
-// 		printf("%d is compiling\n", coder->id);
-// 		pthread_mutex_unlock(&coder->simu->print_lock);
-		
-// 		pthread_mutex_lock(&coder->coder_lock);
-// 		coder->compiles_count++;
-// 		pthread_mutex_unlock(&coder->coder_lock);
-
-		
-		
-// 		pthread_mutex_unlock(&first_dongle->lock);
-// 		pthread_mutex_unlock(&second_dongle->lock);
-
-// 	}
-	
-	
-	
-// 	return (NULL);
-// }
-
-
-
 void	*routine(void	*args)
 {
 	t_coder *coder;
@@ -112,24 +60,33 @@ void	*routine(void	*args)
 	return (NULL);
 }
 
-void	sumilation(t_sumilation *sum)
+static int	create_coders(t_sumilation *sum)
 {
 	int	i;
-	
+
 	i = 0;
-	init_mutex_dongle(sum);
-	pthread_mutex_init(&sum->print_lock, NULL);
-	sum->start_time = get_time_of_ms();
 	while (i < sum->data->number_of_coders)
 	{
-		pthread_create(&sum->coder[i].thread_id, NULL, routine, (void*)&sum->coder[i]);
+		pthread_create(&sum->coder[i].thread_id, NULL, routine, (void *)&sum->coder[i]);
 		i++;
 	}
-
 	i = 0;
 	while (i < sum->data->number_of_coders)
 	{
 		pthread_join(sum->coder[i].thread_id, NULL);
 		i++;
 	}
+	return (1);
+}
+
+void	sumilation(t_sumilation *sum)
+{
+
+	init_mutex_dongle(sum);
+	pthread_mutex_init(&sum->state_lock, NULL);
+	pthread_mutex_init(&sum->print_lock, NULL);
+	sum->start_time = get_time_of_ms();
+	create_coders(sum);
+	pthread_mutex_init(&sum->state_lock, NULL);
+
 }

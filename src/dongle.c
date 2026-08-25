@@ -32,6 +32,8 @@ int	take_dongle(t_coder *coder, t_dongle *first, t_dongle *second)
 
 void take_off_dongle(t_dongle *first, t_dongle *second)
 {
+	first->is_free = 1;
+	second->is_free = 1;
 	pthread_mutex_unlock(&first->lock);
 	pthread_mutex_unlock(&second->lock);
 }

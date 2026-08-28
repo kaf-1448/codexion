@@ -46,7 +46,6 @@ int take_dongle(t_coder *coder)
 // 		get_time_of_ms() - coder->simu->start_time, coder->id);
 // 	pthread_mutex_unlock(&coder->simu->print_lock);
 
-<<<<<<< HEAD
 // 	pthread_mutex_lock(&second->lock);
 // 	pthread_mutex_lock(&coder->simu->print_lock);
 // 	printf("%ld %d has taken a dongle\n",
@@ -61,7 +60,7 @@ int take_dongle(t_coder *coder)
 // 	pthread_mutex_unlock(&first->lock);
 // 	pthread_mutex_unlock(&second->lock);
 // }
-=======
+
 void take_off_dongle(t_dongle *first, t_dongle *second)
 {
 	first->is_free = 1;
@@ -69,4 +68,4 @@ void take_off_dongle(t_dongle *first, t_dongle *second)
 	pthread_mutex_unlock(&first->lock);
 	pthread_mutex_unlock(&second->lock);
 }
->>>>>>> 5b17894dd7b84dac03f56970813e30a32e7418d3
+

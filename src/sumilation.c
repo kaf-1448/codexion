@@ -1,5 +1,8 @@
 #include    "../library/codexion.h"
+<<<<<<< HEAD
 #include <unistd.h>
+=======
+>>>>>>> 5b17894dd7b84dac03f56970813e30a32e7418d3
 
 void	*routine(void	*args)
 {
@@ -81,16 +84,21 @@ void	*routine(void	*args)
 	return (NULL);
 }
 
+<<<<<<< HEAD
 static void	create_coder(t_sumilation *sum)
+=======
+static int	create_coders(t_sumilation *sum)
+>>>>>>> 5b17894dd7b84dac03f56970813e30a32e7418d3
 {
 	int	i;
-	
+
 	i = 0;
 	while (i < sum->data->number_of_coders)
 	{
-		pthread_create(&sum->coder[i].thread_id, NULL, routine, (void*)&sum->coder[i]);
+		pthread_create(&sum->coder[i].thread_id, NULL, routine, (void *)&sum->coder[i]);
 		i++;
 	}
+<<<<<<< HEAD
 }
 
 void	sumilation(t_sumilation *sum)
@@ -101,10 +109,25 @@ void	sumilation(t_sumilation *sum)
 	pthread_mutex_init(&sum->print_lock, NULL);
 	sum->start_time = get_time_of_ms();
 	create_coder(sum);
+=======
+>>>>>>> 5b17894dd7b84dac03f56970813e30a32e7418d3
 	i = 0;
 	while (i < sum->data->number_of_coders)
 	{
 		pthread_join(sum->coder[i].thread_id, NULL);
 		i++;
 	}
+	return (1);
+}
+
+void	sumilation(t_sumilation *sum)
+{
+
+	init_mutex_dongle(sum);
+	pthread_mutex_init(&sum->state_lock, NULL);
+	pthread_mutex_init(&sum->print_lock, NULL);
+	sum->start_time = get_time_of_ms();
+	create_coders(sum);
+	pthread_mutex_init(&sum->state_lock, NULL);
+
 }

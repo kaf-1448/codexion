@@ -4,17 +4,29 @@ void *monitor_routine(void *args)
 {
 	int	i;
 	t_sumilation *simu = (t_sumilation*)args;
+	long	current_time;
+	long	last_compile;
 
 	i = 0;
+	current_time = get_time_of_ms();
 	while (1)
 	{
 		while (i < simu->data->number_of_coders)
 		{
 			if (simu->coder[i].is_finished)
-				return ;
+				return (NULL);
+			pthread_mutex_lock(&simu->state_lock);
+			last_compile = simu->coder[i].last_time_compilation;
+			pthread_mutex_unlock(&simu->state_lock);
+			if (current_time + last_compile > simu->data->time_to_burnout)
+				simu->is_simulation_over = 1;
+			i++;
 		}
+		usleep(500);
+		// Burnout check
 
-		
+
+
 	}
 	return (NULL);
 }

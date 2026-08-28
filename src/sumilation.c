@@ -1,4 +1,5 @@
 #include    "../library/codexion.h"
+#include <bits/pthreadtypes.h>
 
 void	*routine(void	*args)
 {
@@ -22,6 +23,7 @@ void	*routine(void	*args)
 	if (coder->id % 2 == 0)
 		usleep(1000);
 
+	// pthread_mutex_lock()
 	while (coder->compiles_count < coder->data->number_of_compiles_required 
 			&& !coder->simu->is_simulation_over )
 	{

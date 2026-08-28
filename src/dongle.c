@@ -16,10 +16,18 @@ void	init_mutex_dongle(t_sumilation *sum)
 
 int take_dongle(t_coder *coder)
 {
-	if (!coder->left_dongle->is_free
-		 && !coder->right_dongle->is_free
-		&& coder->simu->is_simulation_over)
+
+	if (coder->simu->is_simulation_over)
 		return (0);
+
+	if (!coder->left_dongle->is_free
+		 || !coder->right_dongle->is_free)
+	{
+		pthread_mutex_unlock(&coder->simu->state_lock);
+		return (0);
+	}
+
+	
 
 	pthread_mutex_lock(&coder->left_dongle->lock);
 	pthread_mutex_lock(&coder->simu->print_lock);

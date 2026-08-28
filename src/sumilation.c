@@ -22,7 +22,8 @@ void	*routine(void	*args)
 	if (coder->id % 2 == 0)
 		usleep(1000);
 
-	while (coder->compiles_count < coder->data->number_of_compiles_required)
+	while (coder->compiles_count < coder->data->number_of_compiles_required 
+			&& !coder->simu->is_simulation_over )
 	{
 		// if takedingle:
 		// 	return 0;
@@ -90,6 +91,7 @@ static int	create_coders(t_sumilation *sum)
 		pthread_create(&sum->coder[i].thread_id, NULL, routine, (void *)&sum->coder[i]);
 		i++;
 	}
+	create_monitor(sum);
 	i = 0;
 	while (i < sum->data->number_of_coders)
 	{
@@ -107,7 +109,6 @@ void	sumilation(t_sumilation *sum)
 	pthread_mutex_init(&sum->print_lock, NULL);
 	sum->start_time = get_time_of_ms();
 	create_coders(sum);
-	create_monitor(sum);
 	pthread_mutex_init(&sum->state_lock, NULL);
 
 }

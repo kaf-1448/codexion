@@ -31,6 +31,8 @@ void	*routine(void	*args)
 		// 	return 0;
 		coder->left_dongle = first_dongle;
 		coder->right_dongle = second_dongle;
+		// if (coder->simu->is_simulation_over)
+		// 	return (NULL);
 		if (take_dongle(coder))
 		{
 		
@@ -39,11 +41,14 @@ void	*routine(void	*args)
 			pthread_mutex_lock(&coder->coder_lock);
 			coder->last_time_compilation = get_time_of_ms();
 			pthread_mutex_unlock(&coder->coder_lock);
-	
+			
 			pthread_mutex_lock(&coder->simu->print_lock);
 			printf("%ld %d is compiling\n", get_time_of_ms() - coder->simu->start_time, coder->id);
 			pthread_mutex_unlock(&coder->simu->print_lock);
-	
+			ft_usleep(coder->simu, coder->data->time_to_compile);
+			if (coder->simu->is_simulation_over)
+				return (NULL);
+			
 			// 4. Sleep for Compile Time (Holding Dongles)
 			// ft_usleep(coder->simu, coder->simu->data->time_to_compile);
 			
@@ -59,8 +64,6 @@ void	*routine(void	*args)
 			pthread_mutex_unlock(&coder->simu->print_lock);
 			usleep(coder->data->time_to_debug * 1000);
 			ft_usleep(coder->simu, coder->simu->data->time_to_debug);
-			if (coder->simu->is_simulation_over)
-				return (NULL);
 	
 			
 			// 5. Unlock Dongles
@@ -93,9 +96,9 @@ static int	create_coders(t_sumilation *sum)
 	while (i < sum->data->number_of_coders)
 	{
 		pthread_create(&sum->coder[i].thread_id, NULL, routine, (void *)&sum->coder[i]);
+		create_monitor(sum);
 		i++;
 	}
-	create_monitor(sum);
 	i = 0;
 	while (i < sum->data->number_of_coders)
 	{

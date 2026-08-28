@@ -65,7 +65,7 @@ t_sumilation *intit_sumlation(char **ar);
 void	sumilation(t_sumilation *sum);
 void	init_mutex_dongle(t_sumilation *sum);
 long	get_time_of_ms(void);
-void	ft_usleep(t_sumilation *sim, long target);
+int	ft_usleep(t_sumilation *sim, long target);
 
 // dongles
 int	take_dongle(t_coder *coder);

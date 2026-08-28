@@ -23,7 +23,7 @@ void	*routine(void	*args)
 	if (coder->id % 2 == 0)
 		usleep(1000);
 
-	// pthread_mutex_lock()
+	// pthread_mutex_lock(&coder->simu->state_lock);
 	while (coder->compiles_count < coder->data->number_of_compiles_required 
 			&& !coder->simu->is_simulation_over )
 	{
@@ -59,6 +59,8 @@ void	*routine(void	*args)
 			pthread_mutex_unlock(&coder->simu->print_lock);
 			usleep(coder->data->time_to_debug * 1000);
 			ft_usleep(coder->simu, coder->simu->data->time_to_debug);
+			if (coder->simu->is_simulation_over)
+				return (NULL);
 	
 			
 			// 5. Unlock Dongles

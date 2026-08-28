@@ -72,6 +72,7 @@ t_sumilation *intit_sumlation(char **ar)
 	t_sumilation	*sum;
 
 	sum = malloc(sizeof(t_sumilation ));
+	sum->is_simulation_over = 0;
 	if (!sum)
 		return (NULL);
 	sum->data = intilize_data(ar);

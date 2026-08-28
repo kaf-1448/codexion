@@ -71,5 +71,7 @@ void	ft_usleep(t_sumilation *sim, long target);
 int	take_dongle(t_coder *coder);
 void take_off_dongle(t_dongle *first, t_dongle *second);
 
+// monitor
+void create_monitor(t_sumilation *simu);
 
 #endif

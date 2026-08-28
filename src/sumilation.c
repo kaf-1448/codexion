@@ -107,6 +107,7 @@ void	sumilation(t_sumilation *sum)
 	pthread_mutex_init(&sum->print_lock, NULL);
 	sum->start_time = get_time_of_ms();
 	create_coders(sum);
+	create_monitor(sum);
 	pthread_mutex_init(&sum->state_lock, NULL);
 
 }

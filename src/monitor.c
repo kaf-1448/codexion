@@ -1,6 +1,6 @@
 #include	"../library/codexion.h"
 
-void *monitor_routine(void *args)
+static void *monitor_routine(void *args)
 {
 	int	i;
 	t_sumilation *simu = (t_sumilation*)args;

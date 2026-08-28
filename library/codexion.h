@@ -68,7 +68,7 @@ long	get_time_of_ms(void);
 void	ft_usleep(t_sumilation *sim, long target);
 
 // dongles
-int	take_dongle(t_coder *coder, t_dongle *first, t_dongle *second);
+int	take_dongle(t_coder *coder);
 void take_off_dongle(t_dongle *first, t_dongle *second);
 
 

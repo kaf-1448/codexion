@@ -13,25 +13,50 @@ void	init_mutex_dongle(t_sumilation *sum)
 	}
 }
 
-int	take_dongle(t_coder *coder, t_dongle *first, t_dongle *second)
+
+int take_dongle(t_coder *coder)
 {
-	pthread_mutex_lock(&first->lock);
+	if (!coder->left_dongle->is_free && !coder->right_dongle->is_free)
+		return (0);
+
+	pthread_mutex_lock(&coder->left_dongle->lock);
 	pthread_mutex_lock(&coder->simu->print_lock);
+	coder->left_dongle->is_free = 0;
+	printf("%ld %d has taken a dongle\n",
+		get_time_of_ms() - coder->simu->start_time, coder->id);
 	printf("%ld %d has taken a dongle\n",
 		get_time_of_ms() - coder->simu->start_time, coder->id);
 	pthread_mutex_unlock(&coder->simu->print_lock);
+	
+	// pthread_mutex_lock(&coder->right_dongle->lock);
+	// pthread_mutex_lock(&coder->simu->print_lock);
+	coder->right_dongle->is_free = 0;
+		// pthread_mutex_unlock(&coder->simu->print_lock);
+	pthread_mutex_unlock(&coder->left_dongle->lock);
+	pthread_mutex_unlock(&coder->right_dongle->lock);
 
-	pthread_mutex_lock(&second->lock);
-	pthread_mutex_lock(&coder->simu->print_lock);
-	printf("%ld %d has taken a dongle\n",
-		get_time_of_ms() - coder->simu->start_time, coder->id);
-	pthread_mutex_unlock(&coder->simu->print_lock);
-	return (0);
+	return (1);
 }
 
+// int	take_dongle(t_coder *coder, t_dongle *first, t_dongle *second)
+// {
+// 	pthread_mutex_lock(&first->lock);
+// 	pthread_mutex_lock(&coder->simu->print_lock);
+// 	printf("%ld %d has taken a dongle\n",
+// 		get_time_of_ms() - coder->simu->start_time, coder->id);
+// 	pthread_mutex_unlock(&coder->simu->print_lock);
 
-void take_off_dongle(t_dongle *first, t_dongle *second)
-{
-	pthread_mutex_unlock(&first->lock);
-	pthread_mutex_unlock(&second->lock);
-}
+// 	pthread_mutex_lock(&second->lock);
+// 	pthread_mutex_lock(&coder->simu->print_lock);
+// 	printf("%ld %d has taken a dongle\n",
+// 		get_time_of_ms() - coder->simu->start_time, coder->id);
+// 	pthread_mutex_unlock(&coder->simu->print_lock);
+// 	return (0);
+// }
+
+
+// void take_off_dongle(t_dongle *first, t_dongle *second)
+// {
+// 	pthread_mutex_unlock(&first->lock);
+// 	pthread_mutex_unlock(&second->lock);
+// }

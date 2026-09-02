@@ -19,11 +19,11 @@ int	ft_usleep(t_sumilation *sim, long target)
 		if (sim->is_simulation_over)
 		{
 			pthread_mutex_unlock(&sim->state_lock);
-			return (0);
+			return (1);
 		}
 		pthread_mutex_unlock(&sim->state_lock);
 		usleep(500);
 	}
-	return (1);
+	return (0);
 }
 

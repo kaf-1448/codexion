@@ -10,6 +10,7 @@
 
 
 typedef struct s_sumilation t_sumilation;
+typedef struct s_queue t_queue;
 
 typedef struct s_data {
 	long number_of_coders;
@@ -28,6 +29,8 @@ typedef struct s_dongle {
 	int is_free;
 	long	last_released_time;
 	pthread_mutex_t lock;
+	pthread_cond_t cond;
+	t_queue *queue;
 } t_dongle;
 
 typedef struct	s_coder {
@@ -43,7 +46,12 @@ typedef struct	s_coder {
 	t_sumilation *simu;
 }	t_coder;
 
+typedef struct s_queue {
+	t_coder *coders[2];
+} t_queue;
+
 struct s_sumilation {
+	pthread_t monitor_id;
 	long	start_time;
 	int is_simulation_over;
 	pthread_mutex_t print_lock;
@@ -68,10 +76,16 @@ long	get_time_of_ms(void);
 int	ft_usleep(t_sumilation *sim, long target);
 
 // dongles
-int	take_dongle(t_coder *coder);
-void take_off_dongle(t_dongle *first, t_dongle *second);
+// int	take_dongle(t_coder *coder);
+int take_dongle(t_coder *coder, t_dongle *dongle);
+void take_off_dongle(t_dongle *dongle);
 
 // monitor
 void create_monitor(t_sumilation *simu);
+
+
+// scheduler
+void	organize_queue(t_dongle *dongle, t_coder *coder);
+void	remove_from_queue(t_dongle *dongle, t_coder *coder);
 
 #endif

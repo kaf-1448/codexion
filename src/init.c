@@ -1,4 +1,5 @@
 #include    "../library/codexion.h"
+#include <bits/pthreadtypes.h>
 
 t_data *intilize_data(char **ar)
 {
@@ -35,7 +36,13 @@ t_dongle	*create_dongles(t_data *data)
 		dongle[i].id = i+1;
 		dongle[i].is_free = 1;
 		dongle[i].last_released_time = 0;
+		dongle[i].queue = malloc(sizeof(t_queue));
+		if (!dongle[i].queue)
+			return NULL;
+		dongle[i].queue->coders[0] = NULL;
+		dongle[i].queue->coders[1] = NULL;
 		pthread_mutex_init(&dongle[i].lock, NULL);
+		pthread_cond_init(&dongle->cond, NULL);
 		i++;
 	}
 	return (dongle);
@@ -54,7 +61,7 @@ t_coder *create_coders(t_data *data, t_dongle *dongle, t_sumilation *simu)
 	while (i < data->number_of_coders)
 	{
 		coders[i].id = i+1;
-		coders[i].last_time_compilation = 0;
+		coders[i].last_time_compilation = get_time_of_ms();
 		coders[i].compiles_count = 0;
 		coders[i].is_finished = 0;
 		coders[i].right_dongle = &dongle[(i -1 + data->number_of_coders) % data->number_of_coders];
@@ -71,10 +78,10 @@ t_sumilation *intit_sumlation(char **ar)
 {
 	t_sumilation	*sum;
 
-	sum = malloc(sizeof(t_sumilation ));
-	sum->is_simulation_over = 0;
+	sum = malloc(sizeof(t_sumilation));
 	if (!sum)
 		return (NULL);
+	sum->is_simulation_over = 0;
 	sum->data = intilize_data(ar);
 	if (!sum->data)
 		return (free(sum), NULL);

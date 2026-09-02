@@ -1,0 +1,63 @@
+classDiagram
+    direction TB
+
+    class t_data {
+        +long number_of_coders
+        +long time_to_burnout
+        +long time_to_compile
+        +long time_to_debug
+        +long time_to_refactor
+        +long number_of_compiles_required
+        +long dongle_cooldown
+        +int scheduler
+    }
+
+    class t_queue {
+        +t_coder* coders[2]
+    }
+
+    class t_dongle {
+        +int id
+        +int is_free
+        +long last_released_time
+        +pthread_mutex_t lock
+        +pthread_cond_t cond
+        +t_queue* queue
+    }
+
+    class t_coder {
+        +int id
+        +long last_time_compilation
+        +int compiles_count
+        +int is_finished
+        +pthread_t thread_id
+        +pthread_mutex_t coder_lock
+        +t_dongle* right_dongle
+        +t_dongle* left_dongle
+        +t_data* data
+        +t_sumilation* simu
+    }
+
+    class t_sumilation {
+        +pthread_t monitor_id
+        +long start_time
+        +int is_simulation_over
+        +pthread_mutex_t print_lock
+        +pthread_mutex_t state_lock
+        +t_coder* coder
+        +t_dongle* dongle
+        +t_data* data
+    }
+
+    %% Relations
+    t_sumilation "1" *-- "1" t_data : points to
+    t_sumilation "1" *-- "N" t_coder : contains array
+    t_sumilation "1" *-- "N" t_dongle : contains array
+
+    t_coder "1" --> "1" t_data : reads config
+    t_coder "1" --> "1" t_sumilation : back-reference
+    t_coder "1" --> "1" t_dongle : left_dongle
+    t_coder "1" --> "1" t_dongle : right_dongle
+
+    t_dongle "1" *-- "1" t_queue : manages FIFO/EDF
+    t_queue "1" o-- "0..2" t_coder : queued coders waiting

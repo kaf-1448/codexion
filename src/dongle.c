@@ -51,16 +51,21 @@ int take_dongle(t_coder *coder, t_dongle *dongle)
 		pthread_mutex_unlock(&coder->simu->state_lock);
 	}
 
-	dongle->is_free = 0;
+	pthread_mutex_lock(&coder->simu->state_lock);
 	pthread_mutex_lock(&coder->simu->print_lock);
-	printf("%ld %d is taken a dongle.\n", get_time_of_ms() - coder->simu->start_time, coder->id);
+	if (coder->simu->is_simulation_over)
+	{	
+		pthread_mutex_unlock(&dongle->lock);
+		pthread_mutex_unlock(&coder->simu->print_lock);
+		pthread_mutex_unlock(&coder->simu->state_lock);
+		return (0);
+	}
+	pthread_mutex_unlock(&coder->simu->state_lock);
+	dongle->is_free = 0;
+	printf("%ld %d has taken a dongle.\n", get_time_of_ms() - coder->simu->start_time, coder->id);
 	pthread_mutex_unlock(&coder->simu->print_lock);
 	
 	remove_from_queue(dongle, coder);
-
-
-
-
 
     return (1);
 }

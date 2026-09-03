@@ -94,7 +94,7 @@ void	*routine(void *args)
 			}
 			pthread_mutex_unlock(&coder->simu->state_lock);
 			pthread_mutex_lock(&coder->coder_lock);
-			printf("%ld %d is deuging\n", get_time_of_ms()  - coder->simu->start_time, coder->id);  //d
+			printf("%ld %d is debaging\n", get_time_of_ms()  - coder->simu->start_time, coder->id);  //d
 			pthread_mutex_unlock(&coder->coder_lock);
 			// usleep(coder->data->time_to_debug *1000);
 			if (ft_usleep(coder->simu, coder->data->time_to_debug))

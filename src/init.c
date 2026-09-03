@@ -42,7 +42,7 @@ t_dongle	*create_dongles(t_data *data)
 		dongle[i].queue->coders[0] = NULL;
 		dongle[i].queue->coders[1] = NULL;
 		pthread_mutex_init(&dongle[i].lock, NULL);
-		pthread_cond_init(&dongle->cond, NULL);
+		pthread_cond_init(&dongle[i].cond, NULL);
 		i++;
 	}
 	return (dongle);

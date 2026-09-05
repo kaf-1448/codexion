@@ -7,7 +7,7 @@ static void	*monitor_routine(void *args)
 	t_sumilation	*simu;
 	long	current_time;
 	long	last_compile;
-	
+
 	simu = (t_sumilation*)args;
 	while (1)
 	{
@@ -28,7 +28,7 @@ static void	*monitor_routine(void *args)
 			pthread_mutex_unlock(&simu->coder[i].coder_lock);
 
 
-			if (current_time - last_compile > simu->data->time_to_burnout)
+			if (current_time - last_compile > simu->data->time_to_burnout || simu->data->number_of_coders == 1)
 			{
 				if (simu->coder[i].is_finished == 1)
 				{

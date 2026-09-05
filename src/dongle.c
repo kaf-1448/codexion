@@ -1,6 +1,7 @@
 #include	"../library/codexion.h"
 #include <bits/pthreadtypes.h>
 #include <pthread.h>
+#include <unistd.h>
 
 void	init_mutex_dongle(t_sumilation *sum)
 {
@@ -15,6 +16,15 @@ void	init_mutex_dongle(t_sumilation *sum)
 	}
 }
 
+void	call_down(t_dongle *dongle, long call_down)
+{
+	long target;
+
+	target = dongle->last_released_time + call_down;
+	while (get_time_of_ms() < target)
+		usleep(500);
+
+}
 
 int take_dongle(t_coder *coder, t_dongle *dongle)
 {
@@ -50,6 +60,7 @@ int take_dongle(t_coder *coder, t_dongle *dongle)
 		}
 		pthread_mutex_unlock(&coder->simu->state_lock);
 	}
+	call_down(dongle, coder->data->dongle_cooldown);
 
 	pthread_mutex_lock(&coder->simu->state_lock);
 	pthread_mutex_lock(&coder->simu->print_lock);
@@ -75,6 +86,7 @@ void take_off_dongle(t_dongle *dongle)
 {
 	pthread_cond_broadcast(&dongle->cond);
 	dongle->is_free = 1;
+	dongle->last_released_time = get_time_of_ms();
 	pthread_mutex_unlock(&dongle->lock);
 }
 

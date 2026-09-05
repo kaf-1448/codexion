@@ -53,7 +53,7 @@ void	*routine(void *args)
 			}
 			pthread_mutex_unlock(&coder->simu->state_lock);
 			pthread_mutex_lock(&coder->coder_lock);
-			printf("%ld %d is compling\n", get_time_of_ms()  - coder->simu->start_time, coder->id);      //c
+			printf("%ld %d is compiling\n", get_time_of_ms()  - coder->simu->start_time, coder->id);      //c
 			pthread_mutex_unlock(&coder->coder_lock);
 			// update time of last compile
 			pthread_mutex_lock(&coder->coder_lock);
@@ -77,7 +77,7 @@ void	*routine(void *args)
 			pthread_mutex_unlock(&coder->simu->state_lock);
 			take_off_dongle(first_d);
 			take_off_dongle(second_d);
-			usleep(coder->data->dongle_cooldown * 1000);
+			// usleep(coder->data->dongle_cooldown * 1000);
 			
 
 			// count compile required
@@ -94,7 +94,7 @@ void	*routine(void *args)
 			}
 			pthread_mutex_unlock(&coder->simu->state_lock);
 			pthread_mutex_lock(&coder->coder_lock);
-			printf("%ld %d is debaging\n", get_time_of_ms()  - coder->simu->start_time, coder->id);  //d
+			printf("%ld %d is debugging\n", get_time_of_ms()  - coder->simu->start_time, coder->id);  //d
 			pthread_mutex_unlock(&coder->coder_lock);
 			// usleep(coder->data->time_to_debug *1000);
 			if (ft_usleep(coder->simu, coder->data->time_to_debug))

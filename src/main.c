@@ -1,25 +1,51 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/05 18:26:52 by ykaf              #+#    #+#             */
+/*   Updated: 2026/09/05 18:43:33 by ykaf             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include    "../library/codexion.h"
+#include <pthread.h>
 
-int main(int ac, char **ar)
+void	clean_up_all(t_sumilation* simu)
 {
-    if (ft_parsing(ac, ar))
-        return 1;
+	int	i;
 
-    t_sumilation *sum = intit_sumlation(ar);
-    sumilation(sum);
-    // int i;
+	if (!simu)
+		return ;
+	i = 0;
+	while (i < simu->data->number_of_coders)
+	{
+		pthread_mutex_destroy(&simu->dongle[i].lock);
+		pthread_mutex_destroy(&simu->coder[i].coder_lock);
+		pthread_cond_destroy(&simu->dongle[i].cond);
+		if (simu->dongle[i].queue)
+			free(simu->dongle[i].queue);
+		i++;
+	}
+	pthread_mutex_destroy(&simu->print_lock);
+	pthread_mutex_destroy(&simu->state_lock);
+	free(simu->coder);
+	free(simu->data);
+	free(simu->dongle);
+	free(simu);
+}
 
-    // i = 0;
-    // while(i < sum->data->number_of_coders)
-    // {
-    //     printf("coder id %d\n", sum->coder[i].id);
-    //     printf("dongle left %d\n", sum->coder[i].left_dongle->id);
-    //     printf("dongle right id %d\n", sum->coder[i].right_dongle->id);
-    //     printf("is availble %d\n", sum->coder[i].left_dongle->is_free);
-    //     i++;
-    // }
 
+int	main(int ac, char **ar)
+{
+	t_sumilation	*sum;
 
-    
-    return 0;
+	if (ft_parsing(ac, ar))
+		return (1);
+	sum = intit_sumlation (ar);
+	sumilation(sum);
+	clean_up_all(sum);
+	return (0);
 }

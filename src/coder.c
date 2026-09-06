@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   coder.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/05 18:26:37 by ykaf              #+#    #+#             */
+/*   Updated: 2026/09/05 20:24:49 by ykaf             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../library/codexion.h"
-#include <pthread.h>
 
 long	get_time_of_ms(void)
 {
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
+	struct timeval	tv;
+
+	gettimeofday (&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
@@ -26,4 +38,3 @@ int	ft_usleep(t_sumilation *sim, long target)
 	}
 	return (0);
 }
-

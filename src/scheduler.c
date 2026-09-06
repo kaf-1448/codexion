@@ -1,6 +1,16 @@
-#include	"../library/codexion.h"
-#include <unistd.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   scheduler.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/05 18:27:51 by ykaf              #+#    #+#             */
+/*   Updated: 2026/09/05 18:32:30 by ykaf             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include	"../library/codexion.h"
 
 static void	edf_algorithm(t_dongle *dongle, t_coder *coder)
 {
@@ -14,27 +24,27 @@ static void	edf_algorithm(t_dongle *dongle, t_coder *coder)
 	else if (dongle->queue->coders[1] == NULL)
 	{
 		temp = dongle->queue->coders[0];
-		deadline_old = temp->data->time_to_burnout + temp->last_time_compilation;
-		if (deadline_new < deadline_old )
+		deadline_old = temp->data->time_to_burnout + \
+		temp->last_time_compilation;
+		if (deadline_new < deadline_old)
 		{
 			dongle->queue->coders[0] = coder;
-			dongle->queue->coders[1]= temp;
+			dongle->queue->coders[1] = temp;
 		}
 		else if (deadline_new == deadline_old && coder->id < temp->id)
 		{
 			dongle->queue->coders[0] = coder;
-			dongle->queue->coders[1]= temp;
+			dongle->queue->coders[1] = temp;
 		}
 		else
-			dongle->queue->coders[1]= coder;
+			dongle->queue->coders[1] = coder;
 	}
 }
-
 
 void	organize_queue(t_dongle *dongle, t_coder *coder)
 {
 	if (dongle->queue == NULL)
-		return;
+		return ;
 	if (coder->data->scheduler == 1)
 	{
 		if (dongle->queue->coders[0] == NULL)

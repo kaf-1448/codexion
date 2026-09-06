@@ -1,7 +1,18 @@
-#include    "../library/codexion.h"
-#include <bits/pthreadtypes.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/05 18:26:11 by ykaf              #+#    #+#             */
+/*   Updated: 2026/09/05 18:55:21 by ykaf             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-t_data *intilize_data(char **ar)
+#include    "../library/codexion.h"
+
+t_data	*intilize_data(char **ar)
 {
 	t_data	*data;
 
@@ -25,46 +36,46 @@ t_data *intilize_data(char **ar)
 t_dongle	*create_dongles(t_data *data)
 {
 	t_dongle	*dongle;
-	int i;
-	
+	int			i;
+
 	dongle = malloc(sizeof(t_dongle) * data->number_of_coders);
 	if (!dongle)
 		return (NULL);
 	i = 0;
 	while (i < data->number_of_coders)
 	{
-		dongle[i].id = i+1;
+		dongle[i].id = i + 1;
 		dongle[i].is_free = 1;
-		dongle[i].last_released_time = 0;
+		dongle[i].avaibale_at = 0;
 		dongle[i].queue = malloc(sizeof(t_queue));
 		if (!dongle[i].queue)
-			return NULL;
+			return (NULL);
 		dongle[i].queue->coders[0] = NULL;
 		dongle[i].queue->coders[1] = NULL;
-		pthread_mutex_init(&dongle[i].lock, NULL);
-		pthread_cond_init(&dongle[i].cond, NULL);
+		// pthread_mutex_init(&dongle[i].lock, NULL);
+		// pthread_cond_init(&dongle[i].cond, NULL);
 		i++;
 	}
 	return (dongle);
 }
 
-t_coder *create_coders(t_data *data, t_dongle *dongle, t_sumilation *simu)
+t_coder	*create_coders(t_data *data, t_dongle *dongle, t_sumilation *simu)
 {
-	t_coder *coders;
-	// struct timeval tv;
-	int	i;
-	
+	t_coder	*coders;
+	int		i;
+
 	coders = malloc(sizeof(t_coder) * data->number_of_coders);
 	if (!coders)
 		return (NULL);
 	i = 0;
 	while (i < data->number_of_coders)
 	{
-		coders[i].id = i+1;
+		coders[i].id = i + 1;
 		coders[i].last_time_compilation = get_time_of_ms();
 		coders[i].compiles_count = 0;
 		coders[i].is_finished = 0;
-		coders[i].right_dongle = &dongle[(i -1 + data->number_of_coders) % data->number_of_coders];
+		coders[i].right_dongle = &dongle[(i -1 + data->number_of_coders) \
+		% data->number_of_coders];
 		coders[i].left_dongle = &dongle[i];
 		coders[i].data = data;
 		coders[i].simu = simu;
@@ -73,8 +84,7 @@ t_coder *create_coders(t_data *data, t_dongle *dongle, t_sumilation *simu)
 	return (coders);
 }
 
-
-t_sumilation *intit_sumlation(char **ar)
+t_sumilation	*intit_sumlation(char **ar)
 {
 	t_sumilation	*sum;
 
@@ -88,9 +98,8 @@ t_sumilation *intit_sumlation(char **ar)
 	sum->dongle = create_dongles(sum->data);
 	if (!sum->dongle)
 		return (free(sum->data), free(sum), NULL);
-	sum->coder = create_coders(sum->data,sum->dongle, sum);
+	sum->coder = create_coders(sum->data, sum->dongle, sum);
 	if (!sum->coder)
-		return (free(sum->dongle),free(sum->data), free(sum), NULL);
+		return (free(sum->dongle), free(sum->data), free(sum), NULL);
 	return (sum);
 }
-

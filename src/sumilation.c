@@ -23,8 +23,6 @@ static int	only_coder(t_coder *coder, t_dongle *dongle)
 	return (0);
 }
 
-
-
 static void	init_dongles_order(t_coder *coder, t_dongle **d1, t_dongle **d2)
 {
 	if (coder->left_dongle->id < coder->right_dongle->id)

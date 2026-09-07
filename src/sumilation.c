@@ -23,6 +23,71 @@ static int	only_coder(t_coder *coder, t_dongle *dongle)
 	return (0);
 }
 
+
+
+static void	init_dongles_order(t_coder *coder, t_dongle **d1, t_dongle **d2)
+{
+	if (coder->left_dongle->id < coder->right_dongle->id)
+	{
+		*d1 = coder->left_dongle;
+		*d2 = coder->right_dongle;
+	}
+	else
+	{
+		*d1 = coder->right_dongle;
+		*d2 = coder->left_dongle;
+	}
+	if (coder->id % 2 == 0)
+		usleep(1000);
+}
+
+static int	do_compile(t_coder *coder, t_dongle *d1, t_dongle *d2)
+{
+	pthread_mutex_lock(&coder->simu->print_lock);
+	printf("%ld %d is compiling\n", \
+		get_time_of_ms() - coder->simu->start_time, coder->id);
+	pthread_mutex_unlock(&coder->simu->print_lock);
+	pthread_mutex_lock(&coder->coder_lock);
+	coder->last_time_compilation = get_time_of_ms();
+	pthread_mutex_unlock(&coder->coder_lock);
+	if (ft_usleep(coder->simu, coder->data->time_to_compile))
+	{
+		take_off_dongle(d1);
+		take_off_dongle(d2);
+		return (1);
+	}
+	take_off_dongle(d1);
+	take_off_dongle(d2);
+	pthread_mutex_lock(&coder->coder_lock);
+	coder->compiles_count++;
+	pthread_mutex_unlock(&coder->coder_lock);
+	return (0);
+}
+
+static int	do_debug_refactor(t_coder *coder)
+{
+	pthread_mutex_lock(&coder->simu->print_lock);
+	printf("%ld %d is debugging\n", \
+		get_time_of_ms() - coder->simu->start_time, coder->id);
+	pthread_mutex_unlock(&coder->simu->print_lock);
+	if (ft_usleep(coder->simu, coder->data->time_to_debug))
+		return (1);
+	pthread_mutex_lock(&coder->simu->print_lock);
+	printf("%ld %d is refactoring\n", \
+		get_time_of_ms() - coder->simu->start_time, coder->id);
+	pthread_mutex_unlock(&coder->simu->print_lock);
+	if (ft_usleep(coder->simu, coder->data->time_to_refactor))
+		return (1);
+	if (coder->data->dongle_cooldown > (coder->data->time_to_compile + \
+		coder->data->time_to_debug + coder->data->time_to_refactor) \
+		&& coder->data->number_of_coders % 2 != 0 \
+		&& coder->compiles_count < coder->data->number_of_compiles_required)
+		usleep(coder->data->dongle_cooldown * 2 * 1000);
+	else
+		usleep(1000);
+	return (0);
+}
+
 void	*routine(void *args)
 {
 	t_dongle	*first_d;
@@ -30,19 +95,7 @@ void	*routine(void *args)
 	t_coder		*coder;
 
 	coder = (t_coder *)args;
-	if (coder->left_dongle->id < coder->right_dongle->id)
-	{
-		first_d = coder->left_dongle;
-		second_d = coder->right_dongle;
-	}
-	else
-	{
-		first_d = coder->right_dongle;
-		second_d = coder->left_dongle;
-	}
-	if (coder->id % 2 == 0)
-		usleep(1000);
-	
+	init_dongles_order(coder, &first_d, &second_d);
 	while (1)
 	{
 		if (only_coder(coder, first_d))
@@ -55,87 +108,12 @@ void	*routine(void *args)
 			return (NULL);
 		}
 		pthread_mutex_unlock(&coder->coder_lock);
-		pthread_mutex_lock(&coder->simu->state_lock);
-		if (coder->simu->is_simulation_over)
-		{
-			pthread_mutex_unlock(&coder->simu->state_lock);
+		if (!take_dongle(coder, first_d))
 			return (NULL);
-		}
-		pthread_mutex_unlock(&coder->simu->state_lock);
-		if (take_dongle(coder, first_d) && take_dongle(coder, second_d))
-		{
-			pthread_mutex_lock(&coder->simu->state_lock);
-			if (coder->simu->is_simulation_over)
-			{
-				take_off_dongle(first_d);
-				take_off_dongle(second_d);
-				pthread_mutex_unlock(&coder->simu->state_lock);
-				return (NULL);
-			}
-			pthread_mutex_unlock(&coder->simu->state_lock);
-			pthread_mutex_lock(&coder->simu->print_lock);
-			printf("%ld %d is compiling\n", \
-			get_time_of_ms() - coder->simu->start_time, coder->id);
-			pthread_mutex_unlock(&coder->simu->print_lock);
-			pthread_mutex_lock(&coder->coder_lock);
-			coder->last_time_compilation = get_time_of_ms();
-			pthread_mutex_unlock(&coder->coder_lock);
-			if (ft_usleep(coder->simu, coder->data->time_to_compile))
-			{
-				take_off_dongle(first_d);
-				take_off_dongle(second_d);
-				return (NULL);
-			}
-			pthread_mutex_lock(&coder->simu->state_lock);
-			if (coder->simu->is_simulation_over)
-			{
-				take_off_dongle(first_d);
-				take_off_dongle(second_d);
-				pthread_mutex_unlock(&coder->simu->state_lock);
-				return (NULL);
-			}
-			pthread_mutex_unlock(&coder->simu->state_lock);
-			take_off_dongle(first_d);
-			take_off_dongle(second_d);
-			pthread_mutex_lock(&coder->coder_lock);
-			coder->compiles_count++;
-			pthread_mutex_unlock(&coder->coder_lock);
-			pthread_mutex_lock(&coder->simu->state_lock);
-			if (coder->simu->is_simulation_over)
-			{
-				pthread_mutex_unlock(&coder->simu->state_lock);
-				return (NULL);
-			}
-			pthread_mutex_unlock(&coder->simu->state_lock);
-			pthread_mutex_lock(&coder->simu->print_lock);
-			printf("%ld %d is debugging\n", \
-			get_time_of_ms() - coder->simu->start_time, coder->id);
-			pthread_mutex_unlock(&coder->simu->print_lock);
-			if (ft_usleep(coder->simu, coder->data->time_to_debug))
-			{
-				return (NULL);
-			}
-			pthread_mutex_lock(&coder->simu->state_lock);
-			if (coder->simu->is_simulation_over)
-			{
-				pthread_mutex_unlock(&coder->simu->state_lock);
-				return (NULL);
-			}
-			pthread_mutex_unlock(&coder->simu->state_lock);
-			pthread_mutex_lock(&coder->simu->print_lock);
-			printf("%ld %d is refactoring\n", \
-			get_time_of_ms() - coder->simu->start_time, coder->id);
-			pthread_mutex_unlock(&coder->simu->print_lock);
-			if (ft_usleep(coder->simu, coder->data->time_to_refactor))
-			{
-				return (NULL);
-			}
-			if (coder->data->dongle_cooldown > (coder->data->time_to_compile + \
-				coder->data->time_to_debug + coder->data->time_to_refactor) \
-				&& coder->data->number_of_coders % 2 != 0 \
-				&& coder->compiles_count < coder->data->number_of_compiles_required)
-				usleep(coder->data->dongle_cooldown * 2 * 1000);
-		}
+		if (!take_dongle(coder, second_d))
+			return (take_off_dongle(first_d), NULL);
+		if (do_compile(coder, first_d, second_d) || do_debug_refactor(coder))
+			return (NULL);
 	}
 	return (NULL);
 }
@@ -178,3 +156,132 @@ void	sumilation(t_sumilation *sum)
 	create_coders(sum);
 	pthread_join(sum->monitor_id, NULL);
 }
+
+// void	*routine(void *args)
+// {
+// 	t_dongle	*first_d;
+// 	t_dongle	*second_d;
+// 	t_coder		*coder;
+
+// 	coder = (t_coder *)args;
+// 	if (coder->left_dongle->id < coder->right_dongle->id)
+// 	{
+// 		first_d = coder->left_dongle;
+// 		second_d = coder->right_dongle;
+// 	}
+// 	else
+// 	{
+// 		first_d = coder->right_dongle;
+// 		second_d = coder->left_dongle;
+// 	}
+// 	if (coder->id % 2 == 0)
+// 		usleep(1000);
+	
+// 	while (1)
+// 	{
+// 		if (only_coder(coder, first_d))
+// 			return (NULL);
+// 		pthread_mutex_lock(&coder->coder_lock);
+// 		if (coder->compiles_count == coder->data->number_of_compiles_required)
+// 		{
+// 			coder->is_finished = 1;
+// 			pthread_mutex_unlock(&coder->coder_lock);
+// 			return (NULL);
+// 		}
+// 		pthread_mutex_unlock(&coder->coder_lock);
+// 		pthread_mutex_lock(&coder->simu->state_lock);
+// 		if (coder->simu->is_simulation_over)
+// 		{
+// 			pthread_mutex_unlock(&coder->simu->state_lock);
+// 			return (NULL);
+// 		}
+// 		pthread_mutex_unlock(&coder->simu->state_lock);
+// 		// if (take_dongle(coder, first_d) && take_dongle(coder, second_d))
+// 		// {
+// 		if (!take_dongle(coder, first_d))
+// 			return (NULL);
+// 		if (!take_dongle(coder, second_d))
+// 		{
+// 			take_off_dongle(first_d);
+// 			return (NULL);
+// 		}
+// 		pthread_mutex_lock(&coder->simu->state_lock);
+// 		if (coder->simu->is_simulation_over)
+// 		{
+// 			take_off_dongle(first_d);
+// 			take_off_dongle(second_d);
+// 			pthread_mutex_unlock(&coder->simu->state_lock);
+// 			return (NULL);
+// 		}
+// 		pthread_mutex_unlock(&coder->simu->state_lock);
+// 		pthread_mutex_lock(&coder->simu->print_lock);
+// 		printf("%ld %d is compiling\n", 
+// 		get_time_of_ms() - coder->simu->start_time, coder->id);
+// 		pthread_mutex_unlock(&coder->simu->print_lock);
+// 		pthread_mutex_lock(&coder->coder_lock);
+// 		coder->last_time_compilation = get_time_of_ms();
+// 		pthread_mutex_unlock(&coder->coder_lock);
+// 		if (ft_usleep(coder->simu, coder->data->time_to_compile))
+// 		{
+// 			take_off_dongle(first_d);
+// 			take_off_dongle(second_d);
+// 			return (NULL);
+// 		}
+// 		pthread_mutex_lock(&coder->simu->state_lock);
+// 		if (coder->simu->is_simulation_over)
+// 		{
+// 			take_off_dongle(first_d);
+// 			take_off_dongle(second_d);
+// 			pthread_mutex_unlock(&coder->simu->state_lock);
+// 			return (NULL);
+// 		}
+// 		pthread_mutex_unlock(&coder->simu->state_lock);
+// 		take_off_dongle(first_d);
+// 		take_off_dongle(second_d);
+// 		pthread_mutex_lock(&coder->coder_lock);
+// 		coder->compiles_count++;
+// 		pthread_mutex_unlock(&coder->coder_lock);
+// 		pthread_mutex_lock(&coder->simu->state_lock);
+// 		if (coder->simu->is_simulation_over)
+// 		{
+// 			pthread_mutex_unlock(&coder->simu->state_lock);
+// 			return (NULL);
+// 		}
+// 		pthread_mutex_unlock(&coder->simu->state_lock);
+// 		pthread_mutex_lock(&coder->simu->print_lock);
+// 		printf("%ld %d is debugging\n", 
+// 		get_time_of_ms() - coder->simu->start_time, coder->id);
+// 		pthread_mutex_unlock(&coder->simu->print_lock);
+// 		if (ft_usleep(coder->simu, coder->data->time_to_debug))
+// 		{
+// 			return (NULL);
+// 		}
+// 		pthread_mutex_lock(&coder->simu->state_lock);
+// 		if (coder->simu->is_simulation_over)
+// 		{
+// 			pthread_mutex_unlock(&coder->simu->state_lock);
+// 			return (NULL);
+// 		}
+// 		pthread_mutex_unlock(&coder->simu->state_lock);
+// 		pthread_mutex_lock(&coder->simu->print_lock);
+// 		printf("%ld %d is refactoring\n", 
+// 		get_time_of_ms() - coder->simu->start_time, coder->id);
+// 		pthread_mutex_unlock(&coder->simu->print_lock);
+// 		if (ft_usleep(coder->simu, coder->data->time_to_refactor))
+// 		{
+// 			return (NULL);
+// 		}
+// 		if (coder->data->dongle_cooldown > (coder->data->time_to_compile + 
+// 			coder->data->time_to_debug + coder->data->time_to_refactor) 
+			// && coder->data->number_of_coders % 2 != 0 
+// 			&& coder->compiles_count < coder->data->number_of_compiles_required)
+// 			usleep(coder->data->dongle_cooldown * 2 * 1000);
+// 		else 
+// 		{
+// 			usleep(1000);
+// 		}
+		
+		
+// 	}
+// 	return (NULL);
+// }

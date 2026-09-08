@@ -39,9 +39,21 @@ static void	init_dongles_order(t_coder *coder, t_dongle **d1, t_dongle **d2)
 		usleep(1000);
 }
 
+
+
+
+
 static int	do_compile(t_coder *coder, t_dongle *d1, t_dongle *d2)
 {
+	// print_state_dongle(coder);
 	pthread_mutex_lock(&coder->simu->print_lock);
+	// if (coder->left_dongle->is_free == 0 && coder->right_dongle->is_free == 0)
+	// {
+	printf("%ld %d has taken a dongle\n", \
+	get_time_of_ms() - coder->simu->start_time, coder->id);
+	printf("%ld %d has taken a dongle\n", \
+	get_time_of_ms() - coder->simu->start_time, coder->id);
+	// }
 	printf("%ld %d is compiling\n", \
 		get_time_of_ms() - coder->simu->start_time, coder->id);
 	pthread_mutex_unlock(&coder->simu->print_lock);
@@ -86,6 +98,8 @@ static int	do_debug_refactor(t_coder *coder)
 	return (0);
 }
 
+
+
 void	*routine(void *args)
 {
 	t_dongle	*first_d;
@@ -102,8 +116,7 @@ void	*routine(void *args)
 		if (coder->compiles_count == coder->data->number_of_compiles_required)
 		{
 			coder->is_finished = 1;
-			pthread_mutex_unlock(&coder->coder_lock);
-			return (NULL);
+			return (pthread_mutex_unlock(&coder->coder_lock), NULL);
 		}
 		pthread_mutex_unlock(&coder->coder_lock);
 		if (!take_dongle(coder, first_d))

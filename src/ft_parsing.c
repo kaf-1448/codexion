@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:26:44 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/05 18:51:12 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/09/14 09:51:04 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ long	ft_atoi(char *s)
 
 	sign = 1;
 	i = 0;
-	while (s[i] == ' ' || (s[i] >= 9 && s[i] <= 9))
+	while (s[i] == ' ' || (s[i] >= 9 && s[i] <= 13))
 		i++;
 	if (s[i] == '+' || s[i] == '-')
 	{
@@ -59,19 +59,21 @@ static int	is_valid_int(char *s)
 
 int	ft_parsing(int ac, char **ar)
 {
-	if (ac < 9)
+	if (ac < 9 || ac > 9)
 		return (write(1, "Argument is fails", 18));
+	if (strcmp("./codexion", ar[0]) != 0)
+		return (write(1, "The name of program is incorrect\n", 34));
 	if (!is_valid_int(ar[1]) || ft_atoi(ar[1]) <= 0)
 		return (write(1, "The number of coder is incorrect\n", 34));
-	if (!is_valid_int(ar[2]))
-		return (write(1, "The time_to_burnou is incorrect\n", 33));
-	if (!is_valid_int(ar[3]))
+	if (!is_valid_int(ar[2]) || ft_atoi(ar[2]) <= 0)
+		return (write(1, "The time_to_burnout is incorrect\n", 33));
+	if (!is_valid_int(ar[3]) || ft_atoi(ar[3]) <= 0)
 		return (write(1, "The time_to_compile is incorrect\n", 34));
 	if (!is_valid_int(ar[4]))
 		return (write(1, "The time_to_debug is incorrect\n", 32));
 	if (!is_valid_int(ar[5]))
 		return (write(1, "The time_to_refactor is incorrect\n", 35));
-	if (!is_valid_int(ar[6]))
+	if (!is_valid_int(ar[6]) || ft_atoi(ar[6]) <= 0)
 		return (write(1, "The number_of_compiles_required is incorrect\n", 46));
 	if (!is_valid_int(ar[7]))
 		return (write(1, "The dongle_cooldown is incorrect\n", 34));

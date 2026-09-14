@@ -6,12 +6,11 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:27:45 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/06 17:53:27 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/09/13 10:42:49 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"../library/codexion.h"
-
 
 static void	handle_burnout(t_sumilation *simu, int i, long current_time)
 {
@@ -88,49 +87,3 @@ void	create_monitor(t_sumilation *simu)
 {
 	pthread_create(&simu->monitor_id, NULL, monitor_routine, (void *)simu);
 }
-
-
-// static void	*monitor_routine(void *args)
-// {
-// 	int				i;
-// 	int				count;
-// 	t_sumilation	*simu;
-// 	long			current_time;
-// 	long			last_compile;
-
-// 	simu = (t_sumilation *)args;
-// 	while (1)
-// 	{
-// 		i = 0;
-// 		count = 0;
-// 		while (i < simu->data->number_of_coders)
-// 		{
-// 			pthread_mutex_lock(&simu->coder[i].coder_lock);
-// 			if (simu->coder[i].is_finished == 1)
-// 				count++;
-// 			pthread_mutex_unlock(&simu->coder[i].coder_lock);
-// 			if (count == simu->data->number_of_coders)
-// 				return (NULL);
-// 			current_time = get_time_of_ms();
-// 			pthread_mutex_lock(&simu->coder[i].coder_lock);
-// 			last_compile = simu->coder[i].last_time_compilation;
-// 			pthread_mutex_unlock(&simu->coder[i].coder_lock);
-// 			if (current_time - last_compile > simu->data->time_to_burnout)
-// 			{
-// 				pthread_mutex_lock(&simu->coder[i].coder_lock);
-// 				if (simu->coder[i].is_finished == 1)
-// 				{
-// 					i++;
-// 					pthread_mutex_unlock(&simu->coder[i].coder_lock);
-// 					continue ;
-// 				}
-// 				pthread_mutex_unlock(&simu->coder[i].coder_lock);
-// 				handle_burnout(simu, i, current_time);
-// 				return (NULL);
-// 			}
-// 			i++;
-// 		}
-// 		usleep(500);
-// 	}
-// 	return (NULL);
-// }

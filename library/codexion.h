@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:26:15 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/06 06:40:24 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/09/13 10:43:57 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ int				ft_usleep(t_sumilation *sim, long target);
 // dongles
 int				take_dongle(t_coder *coder, t_dongle *dongle);
 void			take_off_dongle(t_dongle *dongle);
+void			init_dongles_order(t_coder *coder,
+					t_dongle **d1, t_dongle **d2);
 
 // monitor
 void			create_monitor(t_sumilation *simu);
@@ -92,5 +94,8 @@ void			create_monitor(t_sumilation *simu);
 // scheduler
 void			remove_from_queue(t_dongle *dongle, t_coder *coder);
 void			organize_queue(t_dongle *dongle, t_coder *coder);
+
+// only coder
+int				only_coder(t_coder *coder, t_dongle *dongle);
 
 #endif

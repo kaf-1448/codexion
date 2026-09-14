@@ -6,12 +6,11 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:25:57 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/05 20:29:27 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/09/13 10:32:13 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"../library/codexion.h"
-
 
 void	init_mutex_dongle(t_sumilation *sum)
 {
@@ -26,7 +25,6 @@ void	init_mutex_dongle(t_sumilation *sum)
 		i++;
 	}
 }
-
 
 static void	check_call_dawn(t_dongle *dongle, long call_down)
 {
@@ -79,12 +77,11 @@ int	take_dongle(t_coder *coder, t_dongle *dongle)
 	pthread_mutex_lock(&coder->simu->state_lock);
 	pthread_mutex_lock(&coder->simu->print_lock);
 	if (coder->simu->is_simulation_over)
-		return (pthread_mutex_unlock(&dongle->lock),pthread_mutex_unlock(&coder->simu->print_lock),\
-		pthread_mutex_unlock(&coder->simu->state_lock),0);
+		return (pthread_mutex_unlock(&dongle->lock), \
+			pthread_mutex_unlock(&coder->simu->print_lock), \
+			pthread_mutex_unlock(&coder->simu->state_lock), 0);
 	pthread_mutex_unlock(&coder->simu->state_lock);
 	dongle->is_free = 0;
-	// printf("%ld %d has taken a dongle\n", 
-	// 	get_time_of_ms() - coder->simu->start_time, coder->id);
 	pthread_mutex_unlock(&coder->simu->print_lock);
 	remove_from_queue(dongle, coder);
 	return (1);
@@ -97,55 +94,3 @@ void	take_off_dongle(t_dongle *dongle)
 	dongle->avaibale_at = get_time_of_ms();
 	pthread_mutex_unlock(&dongle->lock);
 }
-
-
-// int	take_dongle(t_coder *coder, t_dongle *dongle)
-// {
-// 	pthread_mutex_lock(&coder->simu->state_lock);
-// 	if (coder->simu->is_simulation_over)
-// 	{
-// 		pthread_mutex_unlock(&coder->simu->state_lock);
-// 		return (0);
-// 	}
-// 	pthread_mutex_unlock(&coder->simu->state_lock);
-// 	pthread_mutex_lock(&dongle->lock);
-// 	check_call_dawn(dongle, coder->data->dongle_cooldown);
-// 	organize_queue(dongle, coder);
-// 	while (dongle->is_free == 0 || dongle->queue->coders[0] != coder)
-// 	{
-// 		pthread_mutex_lock(&coder->simu->state_lock);
-// 		if (coder->simu->is_simulation_over)
-// 		{
-// 			pthread_mutex_unlock(&dongle->lock);
-// 			pthread_mutex_unlock(&coder->simu->state_lock);
-// 			return (0);
-// 		}
-// 		// pthread_cond_wait(&dongle->cond, &dongle->lock);
-// 		pthread_mutex_unlock(&coder->simu->state_lock);
-// 		pthread_cond_wait(&dongle->cond, &dongle->lock);
-// 		pthread_mutex_lock(&coder->simu->state_lock);
-// 		if (coder->simu->is_simulation_over)
-// 		{
-// 			pthread_mutex_unlock(&dongle->lock);
-// 			pthread_mutex_unlock(&coder->simu->state_lock);
-// 			return (0);
-// 		}
-// 		pthread_mutex_unlock(&coder->simu->state_lock);
-// 	}
-// 	pthread_mutex_lock(&coder->simu->state_lock);
-// 	pthread_mutex_lock(&coder->simu->print_lock);
-// 	if (coder->simu->is_simulation_over)
-// 	{	
-// 		pthread_mutex_unlock(&dongle->lock);
-// 		pthread_mutex_unlock(&coder->simu->print_lock);
-// 		pthread_mutex_unlock(&coder->simu->state_lock);
-// 		return (0);
-// 	}
-// 	pthread_mutex_unlock(&coder->simu->state_lock);
-// 	dongle->is_free = 0;
-// 	printf("%ld %d has taken a dongle\n", 
-// 	get_time_of_ms() - coder->simu->start_time, coder->id);
-// 	pthread_mutex_unlock(&coder->simu->print_lock);
-// 	remove_from_queue(dongle, coder);
-// 	return (1);
-// }

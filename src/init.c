@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:26:11 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/05 18:55:21 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/09/13 10:42:06 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,6 @@ t_dongle	*create_dongles(t_data *data)
 			return (NULL);
 		dongle[i].queue->coders[0] = NULL;
 		dongle[i].queue->coders[1] = NULL;
-		// pthread_mutex_init(&dongle[i].lock, NULL);
-		// pthread_cond_init(&dongle[i].cond, NULL);
 		i++;
 	}
 	return (dongle);

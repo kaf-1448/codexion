@@ -45,6 +45,7 @@ typedef struct s_dongle {
 typedef struct s_coder {
 	int					id;
 	long				last_time_compilation;
+	long				time_to_request;
 	int					compiles_count;
 	int					is_finished;
 	pthread_t			thread_id;
@@ -87,6 +88,7 @@ int				take_dongle(t_coder *coder, t_dongle *dongle);
 void			take_off_dongle(t_dongle *dongle);
 void			init_dongles_order(t_coder *coder,
 					t_dongle **d1, t_dongle **d2);
+t_coder			*get_other_coder(t_coder *coder, t_dongle *dongle);
 
 // monitor
 void			create_monitor(t_sumilation *simu);
@@ -94,6 +96,7 @@ void			create_monitor(t_sumilation *simu);
 // scheduler
 void			remove_from_queue(t_dongle *dongle, t_coder *coder);
 void			organize_queue(t_dongle *dongle, t_coder *coder);
+int				is_heigher_preoirity(t_coder *c1, t_coder *c2);
 
 // only coder
 int				only_coder(t_coder *coder, t_dongle *dongle);

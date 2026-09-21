@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:27:51 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/13 10:29:48 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/09/21 06:54:57 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,14 @@ int	is_heigher_preoirity(t_coder *c1, t_coder *c2)
 	d1 = c1->last_time_compilation + c1->data->time_to_burnout;
 	d2 = c2->last_time_compilation + c2->data->time_to_burnout;
 	if (c1->data->scheduler == 1)
+	{
+		if (c2->time_to_request == 0)
+			return (1);
+		if (c1->time_to_request != 0
+			&& c1->time_to_request < c2->time_to_request)
+			return (1);
 		return (0);
+	}
 	if (d1 < d2)
 		return (1);
 	else if (d1 == d2 && c1->id < c2->id)
@@ -58,6 +65,8 @@ void	heapify(t_dongle *dongle, int index)
 void	organize_queue(t_dongle *dongle, t_coder *coder)
 {
 	if (!dongle || dongle->queue == NULL || !coder)
+		return ;
+	if (dongle->queue->coders[0] == coder || dongle->queue->coders[1] == coder)
 		return ;
 	if (dongle->queue->coders[0] == NULL)
 		dongle->queue->coders[0] = coder;

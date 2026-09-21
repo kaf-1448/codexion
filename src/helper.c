@@ -40,5 +40,5 @@ void	init_dongles_order(t_coder *coder, t_dongle **d1, t_dongle **d2)
 		*d2 = coder->left_dongle;
 	}
 	if (coder->id % 2 == 0)
-		usleep(1000);
+		usleep(500);
 }

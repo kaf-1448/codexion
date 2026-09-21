@@ -40,7 +40,7 @@ static int	check_coder_burnout(t_sumilation *simu, int i)
 	pthread_mutex_lock(&simu->coder[i].coder_lock);
 	last_compile = simu->coder[i].last_time_compilation;
 	pthread_mutex_unlock(&simu->coder[i].coder_lock);
-	if (current_time - last_compile > simu->data->time_to_burnout)
+	if (current_time - last_compile >= simu->data->time_to_burnout)
 	{
 		pthread_mutex_lock(&simu->coder[i].coder_lock);
 		if (simu->coder[i].is_finished == 1)

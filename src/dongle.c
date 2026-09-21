@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:25:57 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/13 10:32:13 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/09/21 07:08:05 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,29 +32,31 @@ static void	check_call_dawn(t_dongle *dongle, long call_down)
 
 	target = dongle->avaibale_at + call_down;
 	while (get_time_of_ms() < target)
-		usleep(500);
+		usleep(200);
 }
 
 static int	wait_for_dongle(t_coder *coder, t_dongle *dongle)
 {
-	while (dongle->is_free == 0 || dongle->queue->coders[0] != coder)
+	t_coder	*other;
+
+	other = get_other_coder(coder, dongle);
+	while (dongle->is_free == 0 || dongle->queue->coders[0] != coder \
+		|| (coder->data->scheduler == 2 && !other->is_finished \
+			&& other->last_time_compilation < coder->last_time_compilation) \
+		|| (coder->data->scheduler == 1 && !other->is_finished \
+			&& other->time_to_request != 0 \
+			&& other->time_to_request < coder->time_to_request))
 	{
 		pthread_mutex_lock(&coder->simu->state_lock);
 		if (coder->simu->is_simulation_over)
-		{
-			pthread_mutex_unlock(&dongle->lock);
-			pthread_mutex_unlock(&coder->simu->state_lock);
-			return (0);
-		}
+			return (pthread_mutex_unlock(&dongle->lock),
+				pthread_mutex_unlock(&coder->simu->state_lock), 0);
 		pthread_mutex_unlock(&coder->simu->state_lock);
 		pthread_cond_wait(&dongle->cond, &dongle->lock);
 		pthread_mutex_lock(&coder->simu->state_lock);
 		if (coder->simu->is_simulation_over)
-		{
-			pthread_mutex_unlock(&dongle->lock);
-			pthread_mutex_unlock(&coder->simu->state_lock);
-			return (0);
-		}
+			return (pthread_mutex_unlock(&dongle->lock),
+				pthread_mutex_unlock(&coder->simu->state_lock), 0);
 		pthread_mutex_unlock(&coder->simu->state_lock);
 	}
 	return (1);
@@ -62,35 +64,28 @@ static int	wait_for_dongle(t_coder *coder, t_dongle *dongle)
 
 int	take_dongle(t_coder *coder, t_dongle *dongle)
 {
-	pthread_mutex_lock(&coder->simu->state_lock);
-	if (coder->simu->is_simulation_over)
-	{
-		pthread_mutex_unlock(&coder->simu->state_lock);
-		return (0);
-	}
-	pthread_mutex_unlock(&coder->simu->state_lock);
 	pthread_mutex_lock(&dongle->lock);
-	check_call_dawn(dongle, coder->data->dongle_cooldown);
 	organize_queue(dongle, coder);
 	if (!wait_for_dongle(coder, dongle))
 		return (0);
+	check_call_dawn(dongle, coder->data->dongle_cooldown);
 	pthread_mutex_lock(&coder->simu->state_lock);
-	pthread_mutex_lock(&coder->simu->print_lock);
 	if (coder->simu->is_simulation_over)
 		return (pthread_mutex_unlock(&dongle->lock), \
 			pthread_mutex_unlock(&coder->simu->print_lock), \
 			pthread_mutex_unlock(&coder->simu->state_lock), 0);
 	pthread_mutex_unlock(&coder->simu->state_lock);
 	dongle->is_free = 0;
-	pthread_mutex_unlock(&coder->simu->print_lock);
 	remove_from_queue(dongle, coder);
+	pthread_mutex_unlock(&dongle->lock);
 	return (1);
 }
 
 void	take_off_dongle(t_dongle *dongle)
 {	
-	pthread_cond_broadcast(&dongle->cond);
+	pthread_mutex_lock(&dongle->lock);
 	dongle->is_free = 1;
 	dongle->avaibale_at = get_time_of_ms();
+	pthread_cond_broadcast(&dongle->cond);
 	pthread_mutex_unlock(&dongle->lock);
 }

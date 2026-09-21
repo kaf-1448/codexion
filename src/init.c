@@ -70,6 +70,7 @@ t_coder	*create_coders(t_data *data, t_dongle *dongle, t_sumilation *simu)
 	{
 		coders[i].id = i + 1;
 		coders[i].last_time_compilation = get_time_of_ms();
+		coders[i].time_to_request = 0;
 		coders[i].compiles_count = 0;
 		coders[i].is_finished = 0;
 		coders[i].right_dongle = &dongle[(i -1 + data->number_of_coders) \

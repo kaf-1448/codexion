@@ -6,11 +6,14 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:22:58 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/13 10:43:11 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/09/21 06:58:45 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include    "../library/codexion.h"
+#include <bits/pthreadtypes.h>
+#include <pthread.h>
+#include <unistd.h>
 
 static int	do_compile(t_coder *coder, t_dongle *d1, t_dongle *d2)
 {
@@ -23,6 +26,7 @@ static int	do_compile(t_coder *coder, t_dongle *d1, t_dongle *d2)
 		get_time_of_ms() - coder->simu->start_time, coder->id);
 	pthread_mutex_unlock(&coder->simu->print_lock);
 	pthread_mutex_lock(&coder->coder_lock);
+	coder->time_to_request = 0;
 	coder->last_time_compilation = get_time_of_ms();
 	pthread_mutex_unlock(&coder->coder_lock);
 	if (ft_usleep(coder->simu, coder->data->time_to_compile))
@@ -42,18 +46,18 @@ static int	do_compile(t_coder *coder, t_dongle *d1, t_dongle *d2)
 static int	do_debug_refactor(t_coder *coder)
 {
 	pthread_mutex_lock(&coder->simu->state_lock);
-	if (coder->simu->is_simulation_over)
-		return (pthread_mutex_unlock(&coder->simu->state_lock), 1);
-	pthread_mutex_unlock(&coder->simu->state_lock);
 	pthread_mutex_lock(&coder->simu->print_lock);
-	printf("%ld %d is debugging\n", \
-		get_time_of_ms() - coder->simu->start_time, coder->id);
+	if (!coder->simu->is_simulation_over)
+		printf("%ld %d is debugging\n", \
+			get_time_of_ms() - coder->simu->start_time, coder->id);
+	pthread_mutex_unlock(&coder->simu->state_lock);
 	pthread_mutex_unlock(&coder->simu->print_lock);
 	if (ft_usleep(coder->simu, coder->data->time_to_debug))
 		return (1);
 	pthread_mutex_lock(&coder->simu->print_lock);
-	printf("%ld %d is refactoring\n", \
-		get_time_of_ms() - coder->simu->start_time, coder->id);
+	if (!coder->simu->is_simulation_over)
+		printf("%ld %d is refactoring\n", \
+			get_time_of_ms() - coder->simu->start_time, coder->id);
 	pthread_mutex_unlock(&coder->simu->print_lock);
 	if (ft_usleep(coder->simu, coder->data->time_to_refactor))
 		return (1);
@@ -62,8 +66,9 @@ static int	do_debug_refactor(t_coder *coder)
 		&& coder->data->number_of_coders % 2 != 0 \
 		&& coder->compiles_count < coder->data->number_of_compiles_required)
 		usleep(coder->data->dongle_cooldown * 2 * 1000);
-	else
-		usleep(1000);
+	pthread_mutex_lock(&coder->coder_lock);
+	coder->time_to_request = get_time_of_ms();
+	pthread_mutex_unlock(&coder->coder_lock);
 	return (0);
 }
 

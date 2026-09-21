@@ -6,14 +6,11 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:22:58 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/21 06:58:45 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/09/21 07:14:06 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include    "../library/codexion.h"
-#include <bits/pthreadtypes.h>
-#include <pthread.h>
-#include <unistd.h>
 
 static int	do_compile(t_coder *coder, t_dongle *d1, t_dongle *d2)
 {

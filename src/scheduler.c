@@ -6,13 +6,13 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:27:51 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/21 06:54:57 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/10/09 08:43:06 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	"../library/codexion.h"
 
-void	swap(t_coder **a, t_coder **b)
+static void	swap(t_coder **a, t_coder **b)
 {
 	t_coder	*temp;
 
@@ -44,7 +44,7 @@ int	is_heigher_preoirity(t_coder *c1, t_coder *c2)
 	return (0);
 }
 
-void	heapify(t_dongle *dongle, int index)
+static void	heapify(t_dongle *dongle, int index)
 {
 	int	parent;
 

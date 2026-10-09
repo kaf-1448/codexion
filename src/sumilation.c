@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:22:58 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/21 07:14:06 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/10/09 08:41:58 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static int	do_debug_refactor(t_coder *coder)
 	return (0);
 }
 
-void	*routine(void *args)
+static void	*routine(void *args)
 {
 	t_dongle	*first_d;
 	t_dongle	*second_d;

@@ -104,7 +104,7 @@ make re     # Clean rebuild
 
 #### 3. Single Coder Edge Case (Burns out at 800ms)
 ```bash
-./codexion 1 800 200 200 200 0 0 fifo
+./codexion 1 800 200 200 200 1 0 fifo
 ```
 
 ---

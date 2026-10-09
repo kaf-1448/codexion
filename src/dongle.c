@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:25:57 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/21 07:08:05 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/10/09 10:47:14 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ int	take_dongle(t_coder *coder, t_dongle *dongle)
 	pthread_mutex_lock(&coder->simu->state_lock);
 	if (coder->simu->is_simulation_over)
 		return (pthread_mutex_unlock(&dongle->lock), \
-			pthread_mutex_unlock(&coder->simu->print_lock), \
 			pthread_mutex_unlock(&coder->simu->state_lock), 0);
 	pthread_mutex_unlock(&coder->simu->state_lock);
 	dongle->is_free = 0;

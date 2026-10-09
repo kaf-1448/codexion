@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:26:15 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/13 10:43:57 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/10/09 10:42:53 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ int				ft_parsing(int ac, char **ar);
 long			ft_atoi(char *s);
 
 // simulation
-t_data			*intilize_data(char **ar);
 t_sumilation	*intit_sumlation(char **ar);
 void			sumilation(t_sumilation *sum);
 void			init_mutex_dongle(t_sumilation *sum);
@@ -96,7 +95,6 @@ void			create_monitor(t_sumilation *simu);
 // scheduler
 void			remove_from_queue(t_dongle *dongle, t_coder *coder);
 void			organize_queue(t_dongle *dongle, t_coder *coder);
-int				is_heigher_preoirity(t_coder *c1, t_coder *c2);
 
 // only coder
 int				only_coder(t_coder *coder, t_dongle *dongle);

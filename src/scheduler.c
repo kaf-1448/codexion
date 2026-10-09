@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:27:51 by ykaf              #+#    #+#             */
-/*   Updated: 2026/10/09 08:43:06 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/10/09 10:42:47 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	swap(t_coder **a, t_coder **b)
 	*b = temp;
 }
 
-int	is_heigher_preoirity(t_coder *c1, t_coder *c2)
+static int	is_heigher_preoirity(t_coder *c1, t_coder *c2)
 {
 	long	d1;
 	long	d2;

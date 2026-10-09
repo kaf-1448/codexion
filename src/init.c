@@ -6,13 +6,13 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:26:11 by ykaf              #+#    #+#             */
-/*   Updated: 2026/09/13 10:42:06 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/10/09 10:39:46 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include    "../library/codexion.h"
 
-t_data	*intilize_data(char **ar)
+static t_data	*intilize_data(char **ar)
 {
 	t_data	*data;
 
@@ -33,7 +33,7 @@ t_data	*intilize_data(char **ar)
 	return (data);
 }
 
-t_dongle	*create_dongles(t_data *data)
+static t_dongle	*create_dongles(t_data *data)
 {
 	t_dongle	*dongle;
 	int			i;
@@ -57,7 +57,7 @@ t_dongle	*create_dongles(t_data *data)
 	return (dongle);
 }
 
-t_coder	*create_coders(t_data *data, t_dongle *dongle, t_sumilation *simu)
+static t_coder	*create_coders(t_data *data, t_dongle *dongle, t_sumilation *simu)
 {
 	t_coder	*coders;
 	int		i;

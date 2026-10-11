@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:22:58 by ykaf              #+#    #+#             */
-/*   Updated: 2026/10/09 08:41:58 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/10/11 07:23:34 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static int	do_debug_refactor(t_coder *coder)
 		coder->data->time_to_debug + coder->data->time_to_refactor) \
 		&& coder->data->number_of_coders % 2 != 0 \
 		&& coder->compiles_count < coder->data->number_of_compiles_required)
-		usleep(coder->data->dongle_cooldown * 2 * 1000);
+		ft_usleep(coder->simu, coder->data->dongle_cooldown * 2);
 	pthread_mutex_lock(&coder->coder_lock);
 	coder->time_to_request = get_time_of_ms();
 	pthread_mutex_unlock(&coder->coder_lock);

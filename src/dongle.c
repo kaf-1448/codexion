@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:25:57 by ykaf              #+#    #+#             */
-/*   Updated: 2026/10/09 10:47:14 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/10/11 07:22:46 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,22 @@ void	init_mutex_dongle(t_sumilation *sum)
 	}
 }
 
-static void	check_call_dawn(t_dongle *dongle, long call_down)
+static void	check_call_dawn(t_coder *coder, t_dongle *dongle, long call_down)
 {
 	long	target;
 
 	target = dongle->avaibale_at + call_down;
 	while (get_time_of_ms() < target)
+	{
+		pthread_mutex_lock(&coder->simu->state_lock);
+		if (coder->simu->is_simulation_over)
+		{
+			pthread_mutex_unlock(&coder->simu->state_lock);
+			return ;
+		}	
+		pthread_mutex_unlock(&coder->simu->state_lock);
 		usleep(200);
+	}
 }
 
 static int	wait_for_dongle(t_coder *coder, t_dongle *dongle)
@@ -68,7 +77,7 @@ int	take_dongle(t_coder *coder, t_dongle *dongle)
 	organize_queue(dongle, coder);
 	if (!wait_for_dongle(coder, dongle))
 		return (0);
-	check_call_dawn(dongle, coder->data->dongle_cooldown);
+	check_call_dawn(coder, dongle, coder->data->dongle_cooldown);
 	pthread_mutex_lock(&coder->simu->state_lock);
 	if (coder->simu->is_simulation_over)
 		return (pthread_mutex_unlock(&dongle->lock), \

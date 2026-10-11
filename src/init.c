@@ -6,7 +6,7 @@
 /*   By: ykaf <ykaf@student.1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/05 18:26:11 by ykaf              #+#    #+#             */
-/*   Updated: 2026/10/09 10:39:46 by ykaf             ###   ########.fr       */
+/*   Updated: 2026/10/10 07:28:06 by ykaf             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ static t_dongle	*create_dongles(t_data *data)
 	return (dongle);
 }
 
-static t_coder	*create_coders(t_data *data, t_dongle *dongle, t_sumilation *simu)
+static t_coder	*create_coders(t_data *data, t_dongle *dongle, \
+	t_sumilation *simu)
 {
 	t_coder	*coders;
 	int		i;
@@ -73,7 +74,7 @@ static t_coder	*create_coders(t_data *data, t_dongle *dongle, t_sumilation *simu
 		coders[i].time_to_request = 0;
 		coders[i].compiles_count = 0;
 		coders[i].is_finished = 0;
-		coders[i].right_dongle = &dongle[(i -1 + data->number_of_coders) \
+		coders[i].right_dongle = &dongle[(i - 1 + data->number_of_coders) \
 		% data->number_of_coders];
 		coders[i].left_dongle = &dongle[i];
 		coders[i].data = data;
